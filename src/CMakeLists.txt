@@ -29,11 +29,15 @@ add_subdirectory(presentation/)
 set(app_icon_resource_windows "${CMAKE_CURRENT_SOURCE_DIR}/resources.rc")
 qt_add_executable(librum
     main.cpp
+    application_init.h
+    application_init.cpp
     dependency_injection.hpp
     message_handler.hpp
     ${PROJECT_SOURCE_DIR}/fonts.qrc
     ${app_icon_resource_windows}
     ${QM_FILES}
+
+
 )
 
 # Set WIN32 for windows to avoid console getting opened on start on windows
