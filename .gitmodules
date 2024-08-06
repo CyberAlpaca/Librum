@@ -10,3 +10,6 @@
 [submodule "libs/mupdf"]
 	path = libs/mupdf
 	url = https://github.com/ArtifexSoftware/mupdf.git
+[submodule "tests/gui_tests/suri"]
+	path = tests/gui_tests/suri
+	url = https://github.com/CyberAlpaca/suri.git
