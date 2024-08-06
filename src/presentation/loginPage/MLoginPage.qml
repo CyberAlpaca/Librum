@@ -157,6 +157,7 @@ MFlickWrapper {
 
                     MLabeledInputBox {
                         id: emailInput
+                        objectName: "emailInput"
                         Layout.fillWidth: true
                         Layout.topMargin: 32
                         placeholderContent: "kaidoe@gmail.com"
@@ -174,6 +175,7 @@ MFlickWrapper {
 
                     MLabeledInputBox {
                         id: passwordInput
+                        objectName: "passwordInput"
                         Layout.fillWidth: true
                         Layout.topMargin: 22
                         headerText: qsTr("Password")
@@ -243,6 +245,7 @@ MFlickWrapper {
 
                         Label {
                             id: forgotPasswordLabel
+                            objectName: "forgotPasswordLabel"
                             text: qsTr("Forgot password?")
                             Layout.alignment: Qt.AlignVCenter
                             Layout.leftMargin: 3
@@ -262,6 +265,7 @@ MFlickWrapper {
 
                     MButton {
                         id: loginButton
+                        objectName: "loginButton"
                         Layout.fillWidth: true
                         Layout.preferredHeight: 40
                         Layout.topMargin: 42
