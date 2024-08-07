@@ -8,7 +8,7 @@
 #include <QQmlExpression>
 #include <QQmlContext>
 #include <QQmlProperty>
-
+#include <suri/automator.h>
 
 class GuiTests : public QObject
 {
@@ -18,7 +18,6 @@ private:
     QQuickWindow *window;
     QPointer<QApplication> app;
     QPointer<QQmlApplicationEngine> engine;
-    void click(QQuickItem*);
     QQuickItem* findItemById(const QString &aName);
 
 public:
@@ -30,14 +29,6 @@ private slots:
     void cleanupTestCase();
     void test_case1();
 };
-
-void GuiTests::click(QQuickItem* obj){
-    auto lPointF = obj->mapToScene( QPoint( 0, 0 ) );
-    auto lPoint = lPointF.toPoint();
-    lPoint.rx() += obj->width() / 2;
-    lPoint.ry() += obj->height() / 2;
-    QTest::mouseClick( window, Qt::LeftButton, Qt::NoModifier, lPoint );
-}
 
 GuiTests::GuiTests(QPointer<QApplication> app, QPointer<QQmlApplicationEngine> engine)
 {
@@ -84,13 +75,15 @@ void GuiTests::cleanupTestCase()
 
 void GuiTests::test_case1()
 {
+
+    Automator automator(engine);
+
     QObject *loginButtonPure = window->findChild<QObject*>("loginButton");
     QQuickItem *buttonItem1Directly = window->findChild<QQuickItem*>("loginButton");
     QQuickItem *buttonItemCast = qobject_cast<QQuickItem*>(loginButtonPure);
 
     QQuickItem *link = window->findChild<QQuickItem*>("forgotPasswordLabel");
-
-    click(link);
+    automator.click(link);
 
     QTest::qSleep(20000);
 }

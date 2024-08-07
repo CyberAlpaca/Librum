@@ -8,6 +8,8 @@ find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Gui Quick Test)
 find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Gui Qml Quick Test Concurrent)
 find_package(Qt6 REQUIRED COMPONENTS QuickControls2)
 
+add_subdirectory(suri)
+
 set(CMAKE_AUTOUIC ON)
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
@@ -56,6 +58,7 @@ target_link_libraries(GuiTests
         Qt${QT_VERSION_MAJOR}::Test
         Qt${QT_VERSION_MAJOR}::QuickControls2
         ${MUPDF_OUTPUT}
+        suri
 )
 
 target_include_directories(GuiTests
