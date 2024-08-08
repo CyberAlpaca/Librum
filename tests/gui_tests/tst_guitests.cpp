@@ -18,74 +18,76 @@ private:
     QQuickWindow *window;
     QPointer<QApplication> app;
     QPointer<QQmlApplicationEngine> engine;
-    QQuickItem* findItemById(const QString &aName);
+    QFuture<void> future;
 
 public:
-    GuiTests(QPointer<QApplication>, QPointer<QQmlApplicationEngine>);
+    GuiTests();
     ~GuiTests();
 
 private slots:
     void initTestCase();
+    void init();
     void cleanupTestCase();
-    void test_case1();
+    void cleanup();
+    void test_forgotPasswordAndBack();
+    void test_registerAndBack();
 };
 
-GuiTests::GuiTests(QPointer<QApplication> app, QPointer<QQmlApplicationEngine> engine)
+GuiTests::GuiTests()
 {
-    this->app = app;
-    this->engine = engine;
 }
 
 GuiTests::~GuiTests()
 {
 }
 
-QQuickItem* findItemByName(QQuickItem* parent, const QString& objectName) {
-    QQuickItem* foundItem = parent->findChild<QQuickItem*>(objectName);
-    if (foundItem) return foundItem;
-    return nullptr;
-}
-
-QQuickItem* findItemByName(QQmlApplicationEngine* engine, const QString& objectName) {
-    for (auto rootObject : engine->rootObjects()) {
-        QQuickItem* item = qobject_cast<QQuickItem*>(rootObject);
-        if (item) {
-            QQuickItem* foundItem = findItemByName(item, objectName);
-            if (foundItem) return foundItem;
-        }
-    }
-    return nullptr;
-}
-
 void GuiTests::initTestCase()
 {
-    window = qobject_cast<QQuickWindow *>(engine->rootObjects().first());
-    QVERIFY(window);
-    // window->show();
-    window->showMaximized();
-    app->processEvents();
-    QtConcurrent::run(app->exec);
-    QTest::qSleep(2000);
 }
 
 void GuiTests::cleanupTestCase()
 {
-    window->close();
 }
 
-void GuiTests::test_case1()
+void GuiTests::init()
 {
+    auto [app, engine] = initializeApplication(0, nullptr);
+    this->app = app;
+    this->engine = engine;
+    this->window = qobject_cast<QQuickWindow *>(this->engine->rootObjects().first());
+    QVERIFY(window);
+    window->showMaximized();
+    this->future = QtConcurrent::run(app->exec);
+    QTest::qSleep(500);
+}
 
+void GuiTests::cleanup()
+{
+    app->exit(0);
+    QApplication::quit();
+    QTest::qSleep(5000);
+}
+
+void GuiTests::test_forgotPasswordAndBack()
+{
     Automator automator(engine);
+    QQuickItem *forgotPasswordLink = qobject_cast<QQuickItem*>(automator.findObject("forgotPasswordLabel"));
+    automator.click(forgotPasswordLink);
+    QTest::qSleep(500);
+    QQuickItem *backButton = qobject_cast<QQuickItem*>(automator.findObject("backFromForgotPassword"));
+    automator.click(backButton);
+    QTest::qSleep(2000);
+}
 
-    QObject *loginButtonPure = window->findChild<QObject*>("loginButton");
-    QQuickItem *buttonItem1Directly = window->findChild<QQuickItem*>("loginButton");
-    QQuickItem *buttonItemCast = qobject_cast<QQuickItem*>(loginButtonPure);
-
-    QQuickItem *link = window->findChild<QQuickItem*>("forgotPasswordLabel");
-    automator.click(link);
-
-    QTest::qSleep(20000);
+void GuiTests::test_registerAndBack()
+{
+    Automator automator(engine);
+    QQuickItem *forgotPasswordLink = qobject_cast<QQuickItem*>(automator.findObject("registerLinkLabel"));
+    automator.click(forgotPasswordLink);
+    QTest::qSleep(500);
+    QQuickItem *backButton = qobject_cast<QQuickItem*>(automator.findObject("backFromRegister"));
+    automator.click(backButton);
+    QTest::qSleep(2000);
 }
 
 // QTEST_MAIN(GuiTests)
@@ -94,9 +96,6 @@ void GuiTests::test_case1()
 
 int main(int argc, char *argv[])
 {
-    auto [app, engine] = initializeApplication(0, nullptr);
-
-    GuiTests tests = GuiTests(app, engine);
-
+    GuiTests tests = GuiTests();
     return QTest::qExec(&tests, argc, argv);
 }
