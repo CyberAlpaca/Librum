@@ -21,10 +21,12 @@ set(RESOURCE_FILE_PATH ${CMAKE_SOURCE_DIR}/src/presentation/qmlSources.qrc)
 message("===== RESOURCE_FILE_PATH: " ${CMAKE_SOURCE_DIR})
 qt6_add_resources(RESOURCES ${RESOURCE_FILE_PATH})
 set(INITAPP_PATH ${CMAKE_SOURCE_DIR}/src/application_init.cpp)
+set(GLOB_CONTROLLERS_PATH ${CMAKE_SOURCE_DIR}/src/global_controllers.cpp)
 
 add_executable(GuiTests
     tst_guitests.cpp
     ${INITAPP_PATH}
+    ${GLOB_CONTROLLERS_PATH}
     ${RESOURCES}
 )
 add_test(NAME GuiTests COMMAND GuiTests)
