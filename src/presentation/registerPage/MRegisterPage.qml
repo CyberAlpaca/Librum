@@ -197,6 +197,7 @@ MFlickWrapper {
 
             Label {
                 id: loginRedirectionLabel
+                objectName: "backFromRegister"
                 Layout.alignment: Qt.AlignHCenter
                 Layout.topMargin: 14
                 text: qsTr("Already have an account? Login")

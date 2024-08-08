@@ -137,6 +137,7 @@ MFlickWrapper {
 
                         MButton {
                             id: backButton
+                            objectName: "backFromForgotPassword"
                             Layout.preferredHeight: 42
                             Layout.alignment: Qt.AlignHCenter
                             Layout.topMargin: 18
