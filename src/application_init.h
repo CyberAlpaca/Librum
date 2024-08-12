@@ -1,6 +1,4 @@
-#ifndef APPLICATION_INIT_H
-#define APPLICATION_INIT_H
-
+#pragma once
 #include <QApplication>
 #include <QQuickStyle>
 #include <QGuiApplication>
@@ -10,5 +8,3 @@ QPair<QPointer<QApplication>, QPointer<QQmlApplicationEngine>> initializeApplica
 void setupGlobalSettings();
 void loadFont(const QString& path);
 void setupFonts();
-
-#endif // APPLICATION_INIT_H

@@ -42,6 +42,7 @@
 #include "tools_controller.hpp"
 #include "user_controller.hpp"
 #include "word_definition_dto.hpp"
+#include "global_controllers.h"
 
 
 using namespace adapters::controllers;
@@ -94,80 +95,80 @@ QPair<QPointer<QApplication>, QPointer<QQmlApplicationEngine>> initializeApplica
             // Authentication Stack
     auto* authenticationService =
         config::diConfig().create<application::IAuthenticationService*>();
-    auto authenticationController =
+    GlobalControllers::authenticationController =
         std::make_unique<AuthenticationController>(authenticationService);
     qmlRegisterSingletonInstance("Librum.controllers", 1, 0, "AuthController",
-                                 authenticationController.get());
+                                 GlobalControllers::authenticationController.get());
 
             // App Info Stack
     auto* appInfoService =
         config::diConfig().create<application::IAppInfoService*>();
-    auto appInfoController =
+    GlobalControllers::appInfoController =
         std::make_unique<AppInfoController>(appInfoService);
     qmlRegisterSingletonInstance("Librum.controllers", 1, 0, "AppInfoController",
-                                 appInfoController.get());
+                                 GlobalControllers::appInfoController.get());
 
             // Ai explanation
     auto* aiExplanationService =
         config::diConfig().create<application::IAiExplanationService*>();
-    auto aiExplanationController =
+    GlobalControllers::aiExplanationController =
         std::make_unique<AiExplanationController>(aiExplanationService);
     qmlRegisterSingletonInstance("Librum.controllers", 1, 0, "AiExplanationController",
-                                 aiExplanationController.get());
+                                 GlobalControllers::aiExplanationController.get());
 
             // User Stack
     auto* userService = config::diConfig().create<application::IUserService*>();
-    auto userController = std::make_unique<UserController>(userService);
+    GlobalControllers::userController = std::make_unique<UserController>(userService);
     qmlRegisterSingletonInstance("Librum.controllers", 1, 0, "UserController",
-                                 userController.get());
+                                 GlobalControllers::userController.get());
 
             // Dictionary Stack
     auto* dictionaryService = config::diConfig().create<application::IDictionaryService*>();
-    auto dictionaryController = std::make_unique<DictionaryController>(dictionaryService);
+    GlobalControllers::dictionaryController = std::make_unique<DictionaryController>(dictionaryService);
     qmlRegisterSingletonInstance("Librum.controllers", 1, 0, "DictionaryController",
-                                 dictionaryController.get());
+                                 GlobalControllers::dictionaryController.get());
 
             // Folder Stack
     auto* folderService = config::diConfig().create<application::IFolderService*>();
-    auto folderController = std::make_unique<FolderController>(folderService);
+    GlobalControllers::folderController = std::make_unique<FolderController>(folderService);
     qmlRegisterSingletonInstance("Librum.controllers", 1, 0, "FolderController",
-                                 folderController.get());
+                                 GlobalControllers::folderController.get());
 
             // Library Stack
     auto* libraryService = config::diConfig().create<application::ILibraryService*>();
-    auto libraryController = std::make_unique<LibraryController>(libraryService);
+    GlobalControllers::libraryController = std::make_unique<LibraryController>(libraryService);
     qmlRegisterSingletonInstance("Librum.controllers", 1, 0, "LibraryController",
-                                 libraryController.get());
+                                 GlobalControllers::libraryController.get());
 
             // Book Stack
     auto bookService = std::make_unique<application::services::BookService>();
-    auto bookController = std::make_unique<BookController>(bookService.get(), libraryService);
+    GlobalControllers::bookController = std::make_unique<BookController>(bookService.get(), libraryService);
     qmlRegisterSingletonInstance("Librum.controllers", 1, 0, "BookController",
-                                 bookController.get());
+                                 GlobalControllers::bookController.get());
 
             // External Book Stack
     auto externalBookService = std::make_unique<application::services::BookService>();
-    auto externalBookController = std::make_unique<ExternalBookController>(externalBookService.get());
+    GlobalControllers::externalBookController = std::make_unique<ExternalBookController>(externalBookService.get());
     qmlRegisterSingletonInstance("Librum.controllers", 1, 0, "ExternalBookController",
-                                 externalBookController.get());
+                                 GlobalControllers::externalBookController.get());
 
             // Free books stack
     auto* freeBooksService = config::diConfig().create<application::IFreeBooksService*>();
-    auto freeBooksController = std::make_unique<FreeBooksController>(freeBooksService);
+    GlobalControllers::freeBooksController = std::make_unique<FreeBooksController>(freeBooksService);
     qmlRegisterSingletonInstance("Librum.controllers", 1, 0, "FreeBooksController",
-                                 freeBooksController.get());
+                                 GlobalControllers::freeBooksController.get());
 
             // Settings Stack
     auto* settingsService = config::diConfig().create<application::ISettingsService*>();
-    auto settingsController = std::make_unique<SettingsController>(settingsService);
+    GlobalControllers::settingsController = std::make_unique<SettingsController>(settingsService);
     qmlRegisterSingletonInstance("Librum.controllers", 1, 0, "SettingsController",
-                                 settingsController.get());
+                                 GlobalControllers::settingsController.get());
 
             // Tools Stack
     auto toolsService = std::make_unique<application::services::ToolsService>(libraryService);
-    auto toolsController = std::make_unique<ToolsController>(toolsService.get());
+    GlobalControllers::toolsController = std::make_unique<ToolsController>(toolsService.get());
     qmlRegisterSingletonInstance("Librum.controllers", 1, 0, "ToolsController",
-                                 toolsController.get());
+                                 GlobalControllers::toolsController.get());
 
             // Enums
     qmlRegisterUncreatableMetaObject(application::book_operation_status::staticMetaObject, "Librum.controllers",
@@ -228,9 +229,9 @@ QPair<QPointer<QApplication>, QPointer<QQmlApplicationEngine>> initializeApplica
     QObject::connect(userService, &application::IUserService::bookStorageDataUpdated,
                      libraryService, &application::ILibraryService::updateUsedBookStorage);
 
-    QObject::connect(libraryController.get(),
+    QObject::connect(GlobalControllers::libraryController.get(),
                      &adapters::ILibraryController::downloadedProjectGutenbergIdsReady,
-                     freeBooksController.get(),
+                     GlobalControllers::freeBooksController.get(),
                      &adapters::IFreeBooksController::proccessDownloadedProjectGutenbergIds);
 
             // Startup
@@ -239,7 +240,7 @@ QPair<QPointer<QApplication>, QPointer<QQmlApplicationEngine>> initializeApplica
     QQuickStyle::setStyle("Basic");
     engine->addImportPath("qrc:/modules");
     engine->addImportPath(QCoreApplication::applicationDirPath() + "/src/presentation/qt_tree_view/qml/");
-    appInfoController->setQmlApplicationEngine(engine);
+    GlobalControllers::appInfoController->setQmlApplicationEngine(engine);
 
 
             // Setup translations
@@ -252,7 +253,7 @@ QPair<QPointer<QApplication>, QPointer<QQmlApplicationEngine>> initializeApplica
         for(const QString& locale : uiLanguages)
         {
             const QString name = QLocale(locale).name();
-            if(appInfoController->switchToLanguage(name))
+            if(GlobalControllers::appInfoController->switchToLanguage(name))
             {
                 break;
             }
@@ -260,7 +261,7 @@ QPair<QPointer<QApplication>, QPointer<QQmlApplicationEngine>> initializeApplica
     }
     else
     {
-        appInfoController->switchToLanguage(storedLanguage);
+        GlobalControllers::appInfoController->switchToLanguage(storedLanguage);
     }
 
     if(app->arguments().size() == 2)
@@ -273,7 +274,7 @@ QPair<QPointer<QApplication>, QPointer<QQmlApplicationEngine>> initializeApplica
             QCoreApplication::exit(-1);
         }
 
-        auto setupSuccess = externalBookController->setUp(filePath);
+        auto setupSuccess = GlobalControllers::externalBookController->setUp(filePath);
         if(!setupSuccess)
         {
             std::cerr << "The file type of: " << filePath.toStdString() << " is not supported.\n";
