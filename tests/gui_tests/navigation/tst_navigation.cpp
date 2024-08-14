@@ -1,6 +1,6 @@
 #include "../../src/application_init.h"
 #include <QGuiApplication>
-#include <QtTest>
+#include <QTest>
 #include <QQmlApplicationEngine>
 #include <QQuickWindow>
 #include <QQuickItem>
@@ -10,65 +10,53 @@
 #include <QQmlProperty>
 #include <suri/automator.h>
 
-class GuiTests : public QObject
+class NavigationTest : public QObject
 {
     Q_OBJECT
 
 private:
-    QQuickWindow *window;
     QPointer<QApplication> app;
     QPointer<QQmlApplicationEngine> engine;
     QFuture<void> future;
+    void test_one_steps();
+    void test_two_steps();
 
 public:
-    GuiTests();
-    ~GuiTests();
+    NavigationTest();
+    ~NavigationTest();
 
 private slots:
     void initTestCase();
-    void init();
     void cleanupTestCase();
-    void cleanup();
     void test_forgotPasswordAndBack();
     void test_registerAndBack();
 };
 
-GuiTests::GuiTests()
+NavigationTest::NavigationTest()
 {
 }
 
-GuiTests::~GuiTests()
+NavigationTest::~NavigationTest()
 {
 }
 
-void GuiTests::initTestCase()
-{
-}
-
-void GuiTests::cleanupTestCase()
-{
-}
-
-void GuiTests::init()
+void NavigationTest::initTestCase()
 {
     auto [app, engine] = initializeApplication(0, nullptr);
     this->app = app;
     this->engine = engine;
-    this->window = qobject_cast<QQuickWindow *>(this->engine->rootObjects().first());
-    QVERIFY(window);
-    window->showMaximized();
     this->future = QtConcurrent::run(app->exec);
     QTest::qSleep(500);
 }
 
-void GuiTests::cleanup()
+void NavigationTest::cleanupTestCase()
 {
-    app->exit(0);
-    QApplication::quit();
-    QTest::qSleep(5000);
+    this->engine->deleteLater();
+    this->app->exit(0);
 }
 
-void GuiTests::test_forgotPasswordAndBack()
+
+void NavigationTest::test_forgotPasswordAndBack()
 {
     Automator automator(engine);
     QQuickItem *forgotPasswordLink = qobject_cast<QQuickItem*>(automator.findObject("forgotPasswordLabel"));
@@ -79,7 +67,7 @@ void GuiTests::test_forgotPasswordAndBack()
     QTest::qSleep(2000);
 }
 
-void GuiTests::test_registerAndBack()
+void NavigationTest::test_registerAndBack()
 {
     Automator automator(engine);
     QQuickItem *forgotPasswordLink = qobject_cast<QQuickItem*>(automator.findObject("registerLinkLabel"));
@@ -90,12 +78,10 @@ void GuiTests::test_registerAndBack()
     QTest::qSleep(2000);
 }
 
-// QTEST_MAIN(GuiTests)
-
-#include "tst_guitests.moc"
+#include "tst_navigation.moc"
 
 int main(int argc, char *argv[])
 {
-    GuiTests tests = GuiTests();
-    return QTest::qExec(&tests, argc, argv);
+    NavigationTest navTest = NavigationTest();
+    QTest::qExec(&navTest, argc, argv);
 }
