@@ -1,6 +1,4 @@
-#ifndef GLOBALS_HPP
-#define GLOBALS_HPP
-
+#pragma once
 #include <memory>
 #include "authentication_controller.hpp"
 #include "app_info_controller.hpp"
@@ -33,5 +31,3 @@ public:
     static std::unique_ptr<SettingsController> settingsController;
     static std::unique_ptr<ToolsController> toolsController;
 };
-
-#endif // GLOBALS_HPP
