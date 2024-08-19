@@ -298,6 +298,7 @@ MFlickWrapper {
 
             Label {
                 id: registerLinkLabel
+                objectName: "registerLinkLabel"
                 Layout.alignment: Qt.AlignHCenter
                 Layout.topMargin: 14
                 text: qsTr("Don't have an account? Register")
