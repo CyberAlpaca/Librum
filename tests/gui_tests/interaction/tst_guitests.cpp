@@ -2,7 +2,6 @@
 #include <QGuiApplication>
 #include <QTest>
 #include <QQmlApplicationEngine>
-#include <QQuickWindow>
 #include <QQuickItem>
 #include <QtConcurrent>
 #include <QQmlExpression>
@@ -15,7 +14,6 @@ class ButtonInteraction : public QObject
     Q_OBJECT
 
 private:
-    QQuickWindow *window;
     QPointer<QApplication> app;
     QPointer<QQmlApplicationEngine> engine;
     void test_steps();
