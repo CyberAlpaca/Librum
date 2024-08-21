@@ -18,16 +18,19 @@ private:
     QQuickWindow *window;
     QPointer<QApplication> app;
     QPointer<QQmlApplicationEngine> engine;
-    void steps_test_one();
-    void steps_typeLogin();
+    void test_steps();
+    void step_forgotPassword();
+    void step_typeLogin();
+    void closeApp();
 
 public:
     ButtonInteraction();
     ~ButtonInteraction();
 
 private slots:
-    void test_one();
-    void test_typeLogin();
+    void initTestCase();
+    void test_main();
+
 };
 
 ButtonInteraction::ButtonInteraction()
@@ -38,42 +41,39 @@ ButtonInteraction::~ButtonInteraction()
 {
 }
 
-void ButtonInteraction::steps_test_one() {
-    Automator automator(engine);
-    QQuickItem *forgotPasswordLink = qobject_cast<QQuickItem*>(automator.findObject("forgotPasswordLabel"));
-    automator.click(forgotPasswordLink);
+void ButtonInteraction::initTestCase()
+{
+    auto [app, engine] = initializeApplication(0, nullptr);
+
+    if (!app || !engine) {
+        exit(1);
+    }
+
+    this->app = app;
+    this->engine = engine;
+    QTest::qSleep(500);
+}
+
+void ButtonInteraction::closeApp()
+{
     engine->deleteLater();
     app->quit();
     app->deleteLater();
 }
 
-void ButtonInteraction::test_one()
+void ButtonInteraction::test_main()
 {
-    auto [app, engine] = initializeApplication(0, nullptr);
-    this->app = app;
-    this->engine = engine;
-
-    if (!app || !engine) {
-        exit(1);
-    }
-    QTimer::singleShot(3000, this, &ButtonInteraction::steps_test_one);
+    QTimer::singleShot(3000, this, &ButtonInteraction::test_steps);
     app->exec();
 }
 
-void ButtonInteraction::test_typeLogin()
-{
-    auto [app, engine] = initializeApplication(0, nullptr);
-    this->app = app;
-    this->engine = engine;
-
-    if (!app || !engine) {
-        exit(1);
-    }
-    QTimer::singleShot(3000, this, &ButtonInteraction::steps_typeLogin);
-    app->exec();
+void ButtonInteraction::test_steps(){
+    step_typeLogin();
+    step_forgotPassword();
+    closeApp();
 }
 
-void ButtonInteraction::steps_typeLogin()
+void ButtonInteraction::step_typeLogin()
 {
     Automator automator(engine);
 
@@ -90,6 +90,27 @@ void ButtonInteraction::steps_typeLogin()
     QCOMPARE(txt, "alpaca@cyberalpaca.com");
 
     QTest::qSleep(2000);
+    automator.click(myInputField);
+
+    QTest::qSleep(2000);
+
+}
+
+void ButtonInteraction::step_forgotPassword() {
+    Automator automator(engine);
+    QQuickItem *forgotPasswordLink = qobject_cast<QQuickItem*>(automator.findObject("forgotPasswordLabel"));
+    QVERIFY2(forgotPasswordLink, "forgotPasswordLink should be found");
+
+    automator.click(forgotPasswordLink);
+
+    QTest::qSleep(2000);
+
+    QQuickItem *backFromForgotPassword = qobject_cast<QQuickItem*>(automator.findObject("backFromForgotPassword"));
+    QVERIFY2(backFromForgotPassword, "backFromForgotPassword should be found");
+
+    automator.click(backFromForgotPassword);
+    QTest::qSleep(2000);
+
 }
 
 #include "tst_guitests.moc"
