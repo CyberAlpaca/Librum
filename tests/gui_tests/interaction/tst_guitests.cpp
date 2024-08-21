@@ -14,8 +14,7 @@ class ButtonInteraction : public QObject
     Q_OBJECT
 
 private:
-    QPointer<QApplication> app;
-    QPointer<QQmlApplicationEngine> engine;
+    Automator automator;
     void test_steps();
     void step_forgotPassword();
     void step_typeLogin();
@@ -47,34 +46,26 @@ void ButtonInteraction::initTestCase()
         exit(1);
     }
 
-    this->app = app;
-    this->engine = engine;
-    QTest::qSleep(500);
-}
+    automator.setApp(app);
+    automator.setEngine(engine);
 
-void ButtonInteraction::closeApp()
-{
-    engine->deleteLater();
-    app->quit();
-    app->deleteLater();
+    QTest::qSleep(500);
 }
 
 void ButtonInteraction::test_main()
 {
     QTimer::singleShot(3000, this, &ButtonInteraction::test_steps);
-    app->exec();
+    automator.startApp();
 }
 
 void ButtonInteraction::test_steps(){
     step_typeLogin();
     step_forgotPassword();
-    closeApp();
+    automator.closeApp();
 }
 
 void ButtonInteraction::step_typeLogin()
 {
-    Automator automator(engine);
-
     QQuickItem *myInputField = qobject_cast<QQuickItem*>(automator.findObject("myInputField"));
 
     QVERIFY2(myInputField, "myInputField should be found");
@@ -95,7 +86,6 @@ void ButtonInteraction::step_typeLogin()
 }
 
 void ButtonInteraction::step_forgotPassword() {
-    Automator automator(engine);
     QQuickItem *forgotPasswordLink = qobject_cast<QQuickItem*>(automator.findObject("forgotPasswordLabel"));
     QVERIFY2(forgotPasswordLink, "forgotPasswordLink should be found");
 

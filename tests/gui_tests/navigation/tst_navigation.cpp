@@ -58,7 +58,7 @@ void NavigationTest::cleanupTestCase()
 
 void NavigationTest::test_forgotPasswordAndBack()
 {
-    Automator automator(engine);
+    Automator automator(engine, app);
     QQuickItem *forgotPasswordLink = qobject_cast<QQuickItem*>(automator.findObject("forgotPasswordLabel"));
     automator.click(forgotPasswordLink);
     QTest::qSleep(500);
@@ -69,7 +69,7 @@ void NavigationTest::test_forgotPasswordAndBack()
 
 void NavigationTest::test_registerAndBack()
 {
-    Automator automator(engine);
+    Automator automator(engine, app);
     QQuickItem *forgotPasswordLink = qobject_cast<QQuickItem*>(automator.findObject("registerLinkLabel"));
     automator.click(forgotPasswordLink);
     QTest::qSleep(500);
