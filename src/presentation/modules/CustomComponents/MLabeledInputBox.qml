@@ -77,6 +77,7 @@ Item {
 
                 TextField {
                     id: inputField
+                    objectName: "myInputField"
                     Layout.fillWidth: true
                     leftPadding: root.textPadding
                     rightPadding: root.textPadding
