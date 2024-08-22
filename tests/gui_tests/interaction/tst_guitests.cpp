@@ -46,7 +46,6 @@ void ButtonInteraction::initTestCase()
         exit(1);
     }
 
-    automator.setApp(app);
     automator.setEngine(engine);
 
     QTest::qSleep(500);
