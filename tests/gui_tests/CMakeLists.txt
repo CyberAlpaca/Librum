@@ -5,4 +5,3 @@ set(CMAKE_CXX_EXTENSIONS FALSE)
 
 add_subdirectory(suri)
 add_subdirectory(interaction/)
-add_subdirectory(navigation/)
