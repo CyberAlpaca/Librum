@@ -70,6 +70,3 @@ add_test_executable(FailedLogin tst_failed_login.cpp)
 
 add_test(NAME InteractionTests COMMAND InteractionTests)
 add_test(NAME FailedLogin COMMAND FailedLogin)
-
-target_compile_definitions(FailedLogin PRIVATE QT_QML_DEBUG)
-
