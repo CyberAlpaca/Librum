@@ -9,7 +9,7 @@
 #include <QQmlProperty>
 #include <suri/automator.h>
 
-class ButtonInteraction : public QObject
+class BasicUIInteraction : public QObject
 {
     Q_OBJECT
 
@@ -21,8 +21,8 @@ private:
     void closeApp();
 
 public:
-    ButtonInteraction();
-    ~ButtonInteraction();
+    BasicUIInteraction();
+    ~BasicUIInteraction();
 
 private slots:
     void initTestCase();
@@ -30,15 +30,15 @@ private slots:
 
 };
 
-ButtonInteraction::ButtonInteraction()
+BasicUIInteraction::BasicUIInteraction()
 {
 }
 
-ButtonInteraction::~ButtonInteraction()
+BasicUIInteraction::~BasicUIInteraction()
 {
 }
 
-void ButtonInteraction::initTestCase()
+void BasicUIInteraction::initTestCase()
 {
     auto [app, engine] = initializeApplication(0, nullptr);
 
@@ -51,19 +51,19 @@ void ButtonInteraction::initTestCase()
     QTest::qSleep(500);
 }
 
-void ButtonInteraction::test_main()
+void BasicUIInteraction::test_main()
 {
-    QTimer::singleShot(3000, this, &ButtonInteraction::test_steps);
+    QTimer::singleShot(3000, this, &BasicUIInteraction::test_steps);
     automator.startApp();
 }
 
-void ButtonInteraction::test_steps(){
+void BasicUIInteraction::test_steps(){
     step_typeLogin();
     step_forgotPassword();
     automator.closeApp();
 }
 
-void ButtonInteraction::step_typeLogin()
+void BasicUIInteraction::step_typeLogin()
 {
     QQuickItem *myInputField = qobject_cast<QQuickItem*>(automator.findObject("myInputField"));
 
@@ -84,7 +84,7 @@ void ButtonInteraction::step_typeLogin()
 
 }
 
-void ButtonInteraction::step_forgotPassword() {
+void BasicUIInteraction::step_forgotPassword() {
     QQuickItem *forgotPasswordLink = qobject_cast<QQuickItem*>(automator.findObject("forgotPasswordLabel"));
     QVERIFY2(forgotPasswordLink, "forgotPasswordLink should be found");
 
@@ -104,6 +104,6 @@ void ButtonInteraction::step_forgotPassword() {
 
 int main(int argc, char *argv[])
 {
-    ButtonInteraction tests = ButtonInteraction();
+    BasicUIInteraction tests = BasicUIInteraction();
     QTest::qExec(&tests, argc, argv);
 }
