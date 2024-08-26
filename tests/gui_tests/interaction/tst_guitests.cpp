@@ -9,21 +9,20 @@
 #include <QQmlProperty>
 #include <suri/automator.h>
 
-class ButtonInteraction : public QObject
+class BasicUIInteraction : public QObject
 {
     Q_OBJECT
 
 private:
-    QPointer<QApplication> app;
-    QPointer<QQmlApplicationEngine> engine;
+    Automator automator;
     void test_steps();
     void step_forgotPassword();
     void step_typeLogin();
     void closeApp();
 
 public:
-    ButtonInteraction();
-    ~ButtonInteraction();
+    BasicUIInteraction();
+    ~BasicUIInteraction();
 
 private slots:
     void initTestCase();
@@ -31,15 +30,15 @@ private slots:
 
 };
 
-ButtonInteraction::ButtonInteraction()
+BasicUIInteraction::BasicUIInteraction()
 {
 }
 
-ButtonInteraction::~ButtonInteraction()
+BasicUIInteraction::~BasicUIInteraction()
 {
 }
 
-void ButtonInteraction::initTestCase()
+void BasicUIInteraction::initTestCase()
 {
     auto [app, engine] = initializeApplication(0, nullptr);
 
@@ -47,67 +46,57 @@ void ButtonInteraction::initTestCase()
         exit(1);
     }
 
-    this->app = app;
-    this->engine = engine;
+    automator.setEngine(engine);
+
     QTest::qSleep(500);
 }
 
-void ButtonInteraction::closeApp()
+void BasicUIInteraction::test_main()
 {
-    engine->deleteLater();
-    app->quit();
-    app->deleteLater();
+    QTimer::singleShot(3000, this, &BasicUIInteraction::test_steps);
+    automator.startApp();
 }
 
-void ButtonInteraction::test_main()
-{
-    QTimer::singleShot(3000, this, &ButtonInteraction::test_steps);
-    app->exec();
-}
-
-void ButtonInteraction::test_steps(){
+void BasicUIInteraction::test_steps(){
     step_typeLogin();
     step_forgotPassword();
-    closeApp();
+    automator.closeApp();
 }
 
-void ButtonInteraction::step_typeLogin()
+void BasicUIInteraction::step_typeLogin()
 {
-    Automator automator(engine);
-
     QQuickItem *myInputField = qobject_cast<QQuickItem*>(automator.findObject("myInputField"));
 
     QVERIFY2(myInputField, "myInputField should be found");
     QVERIFY2(myInputField->isVisible(), "myInputField should be visible");
     automator.typeText(myInputField, "alpaca@cyberalpaca.com");
 
-    QTest::qSleep(2000);
+    QTest::qSleep(1000);
     QVariant textProperty = myInputField->property("text");
     QString txt = textProperty.toString();
 
     QCOMPARE(txt, "alpaca@cyberalpaca.com");
 
-    QTest::qSleep(2000);
+    QTest::qSleep(1000);
     automator.click(myInputField);
 
-    QTest::qSleep(2000);
+    QTest::qSleep(1000);
 
 }
 
-void ButtonInteraction::step_forgotPassword() {
-    Automator automator(engine);
+void BasicUIInteraction::step_forgotPassword() {
     QQuickItem *forgotPasswordLink = qobject_cast<QQuickItem*>(automator.findObject("forgotPasswordLabel"));
     QVERIFY2(forgotPasswordLink, "forgotPasswordLink should be found");
 
     automator.click(forgotPasswordLink);
 
-    QTest::qSleep(2000);
+    QTest::qSleep(1000);
 
     QQuickItem *backFromForgotPassword = qobject_cast<QQuickItem*>(automator.findObject("backFromForgotPassword"));
     QVERIFY2(backFromForgotPassword, "backFromForgotPassword should be found");
 
     automator.click(backFromForgotPassword);
-    QTest::qSleep(2000);
+    QTest::qSleep(1000);
 
 }
 
@@ -115,6 +104,6 @@ void ButtonInteraction::step_forgotPassword() {
 
 int main(int argc, char *argv[])
 {
-    ButtonInteraction tests = ButtonInteraction();
+    BasicUIInteraction tests = BasicUIInteraction();
     QTest::qExec(&tests, argc, argv);
 }
