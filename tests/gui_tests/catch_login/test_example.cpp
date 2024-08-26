@@ -19,7 +19,7 @@ public:
     }
 
     ~TestFixture() {
-        // Cleanup code - optional
+        // Cleanup code - optional (runs after each SECTION ends)
         // Looks like we don't need to close up, it closes automatically
         // automator.closeApp();
     }
