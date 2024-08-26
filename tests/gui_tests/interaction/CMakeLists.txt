@@ -4,33 +4,14 @@ project(InteractionTests LANGUAGES CXX)
 
 enable_testing()
 
-find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Gui Quick Test)
-find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Gui Qml Quick Test Concurrent)
-find_package(Qt6 REQUIRED COMPONENTS QuickControls2)
-
-# add_subdirectory(suri)
+find_package(Qt6 REQUIRED COMPONENTS Quick Qml QuickControls2 Test Concurrent)
 
 set(CMAKE_AUTOUIC ON)
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
 
-set(CMAKE_CXX_STANDARD 11)
-set(CMAKE_CXX_STANDARD_REQUIRED ON)
-
 set(RESOURCE_FILE_PATH ${CMAKE_SOURCE_DIR}/src/presentation/qmlSources.qrc)
-message("===== RESOURCE_FILE_PATH: " ${CMAKE_SOURCE_DIR})
 qt6_add_resources(RESOURCES ${RESOURCE_FILE_PATH})
-set(INITAPP_PATH ${CMAKE_SOURCE_DIR}/src/application_init.cpp)
-set(GLOB_CONTROLLERS_PATH ${CMAKE_SOURCE_DIR}/src/global_controllers.cpp)
-
-add_executable(InteractionTests
-    tst_guitests.cpp
-    ${INITAPP_PATH}
-    ${GLOB_CONTROLLERS_PATH}
-    ${RESOURCES}
-
-)
-add_test(NAME InteractionTests COMMAND InteractionTests)
 
 if(UNIX)
     set(MUPDF_OUTPUT_DIR "${PROJECT_SOURCE_DIR}/libs/mupdf/build/$<IF:$<CONFIG:Debug>,shared-debug,shared-release>")
@@ -42,37 +23,49 @@ elseif(WIN32)
     set(MUPDF_OUTPUT "${MUPDF_OUTPUT_DIR}/mupdfcpp64.lib" PARENT_SCOPE)
 endif()
 
-
-target_link_libraries(InteractionTests
-    PUBLIC
-        rapidfuzz::rapidfuzz
-    PRIVATE
-        presentation
-        adapters
-        application
-        infrastructure
-        domain
-        Qt6::Concurrent
-        Qt${QT_VERSION_MAJOR}::Core
-        Qt${QT_VERSION_MAJOR}::Gui
-        Qt${QT_VERSION_MAJOR}::Quick
-        Qt${QT_VERSION_MAJOR}::Qml
-        Qt${QT_VERSION_MAJOR}::Widgets
-        Qt${QT_VERSION_MAJOR}::Test
-        Qt${QT_VERSION_MAJOR}::QuickControls2
-        ${MUPDF_OUTPUT}
-        suri
+set(COMMON_PRV_LIBRARIES
+    presentation
+    adapters
+    application
+    infrastructure
+    domain
+    Qt6::Concurrent
+    Qt6::Quick
+    Qt6::Qml
+    Qt6::Widgets
+    Qt6::Test
+    Qt6::QuickControls2
+    ${MUPDF_OUTPUT}
+    suri
 )
 
-target_include_directories(InteractionTests
-                PRIVATE
-                    ${ADAPTERS_INCLUDES}
-                    ${APPLICATION_INCLUDES}
-                    ${DOMAIN_INCLUDES}
-                    ${INFRASTRUCTURE_INCLUDES}
-                    ${CMAKE_CURRENT_SOURCE_DIR}/services
-                    ${CMAKE_CURRENT_SOURCE_DIR}/utility
+set(COMMON_PUBLIC_LIBRARIES
+    rapidfuzz::rapidfuzz
 )
 
-# Define QT_GUI_LIB
-target_compile_definitions(InteractionTests PRIVATE QT_GUI_LIB)
+set(COMMON_INCLUDE_DIRS
+    ${ADAPTERS_INCLUDES}
+    ${APPLICATION_INCLUDES}
+    ${DOMAIN_INCLUDES}
+    ${INFRASTRUCTURE_INCLUDES}
+    ${CMAKE_CURRENT_SOURCE_DIR}/services
+    ${CMAKE_CURRENT_SOURCE_DIR}/utility
+)
+
+set(COMMON_EXE_SOURCES
+    ${CMAKE_SOURCE_DIR}/src/application_init.cpp
+    ${CMAKE_SOURCE_DIR}/src/global_controllers.cpp
+)
+
+# Function to add executables with common settings
+function(add_test_executable target_name)
+    add_executable(${target_name} ${ARGN} ${COMMON_EXE_SOURCES})
+    target_include_directories(${target_name} PRIVATE ${COMMON_INCLUDE_DIRS})
+    target_link_libraries(${target_name} PRIVATE ${COMMON_PRV_LIBRARIES})
+    target_link_libraries(${target_name} PUBLIC ${COMMON_PUBLIC_LIBRARIES})
+endfunction()
+
+add_test_executable(InteractionTests tst_guitests.cpp)
+
+add_test(NAME InteractionTests COMMAND InteractionTests)
+
