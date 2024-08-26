@@ -71,16 +71,16 @@ void BasicUIInteraction::step_typeLogin()
     QVERIFY2(myInputField->isVisible(), "myInputField should be visible");
     automator.typeText(myInputField, "alpaca@cyberalpaca.com");
 
-    QTest::qSleep(2000);
+    QTest::qSleep(1000);
     QVariant textProperty = myInputField->property("text");
     QString txt = textProperty.toString();
 
     QCOMPARE(txt, "alpaca@cyberalpaca.com");
 
-    QTest::qSleep(2000);
+    QTest::qSleep(1000);
     automator.click(myInputField);
 
-    QTest::qSleep(2000);
+    QTest::qSleep(1000);
 
 }
 
@@ -90,13 +90,13 @@ void BasicUIInteraction::step_forgotPassword() {
 
     automator.click(forgotPasswordLink);
 
-    QTest::qSleep(2000);
+    QTest::qSleep(1000);
 
     QQuickItem *backFromForgotPassword = qobject_cast<QQuickItem*>(automator.findObject("backFromForgotPassword"));
     QVERIFY2(backFromForgotPassword, "backFromForgotPassword should be found");
 
     automator.click(backFromForgotPassword);
-    QTest::qSleep(2000);
+    QTest::qSleep(1000);
 
 }
 
