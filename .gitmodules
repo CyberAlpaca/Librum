@@ -13,3 +13,6 @@
 [submodule "tests/gui_tests/suri"]
 	path = tests/gui_tests/suri
 	url = https://github.com/CyberAlpaca/suri.git
+[submodule "tests/gui_tests/Catch2"]
+	path = tests/gui_tests/Catch2
+	url = https://github.com/catchorg/Catch2
