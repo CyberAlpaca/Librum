@@ -77,7 +77,7 @@ Item {
 
                 TextField {
                     id: inputField
-                    objectName: "myInputField"
+                    objectName: parent.parent.parent.parent.parent.objectName+"_textInput"
                     Layout.fillWidth: true
                     leftPadding: root.textPadding
                     rightPadding: root.textPadding
@@ -156,6 +156,7 @@ Item {
 
         Label {
             id: errorText
+            objectName: parent.parent.objectName + "_errorLabel"
             Layout.fillWidth: true
             Layout.topMargin: 2
             visible: root.hasError
