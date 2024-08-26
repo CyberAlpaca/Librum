@@ -2,11 +2,64 @@ cmake_minimum_required(VERSION 3.16)
 
 project(CatchLibrumTests LANGUAGES CXX)
 
-find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Gui Quick Test)
-find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Gui Qml Quick Test Concurrent)
-find_package(Qt6 REQUIRED COMPONENTS QuickControls2)
+find_package(Qt6 REQUIRED COMPONENTS Gui Quick Test Qml QuickControls2 Concurrent Widgets)
 
-# Link test executable against Catch2
-add_executable(tests_example test_example.cpp test_main.cpp)
-target_link_libraries(tests_example PRIVATE Catch2::Catch2 Qt6::Core Qt6::Quick suri)
+set(CMAKE_AUTOUIC ON)
+set(CMAKE_AUTOMOC ON)
+set(CMAKE_AUTORCC ON)
+
+set(RESOURCE_FILE_PATH ${CMAKE_SOURCE_DIR}/src/presentation/qmlSources.qrc)
+qt6_add_resources(RESOURCES ${RESOURCE_FILE_PATH})
+
+if(UNIX)
+    set(MUPDF_OUTPUT_DIR "${PROJECT_SOURCE_DIR}/libs/mupdf/build/$<IF:$<CONFIG:Debug>,shared-debug,shared-release>")
+    set(MUPDF_OUTPUT "${MUPDF_OUTPUT_DIR}/libmupdfcpp.so")
+    set(MUPDF_OUTPUT "${MUPDF_OUTPUT_DIR}/libmupdfcpp.so" PARENT_SCOPE)
+elseif(WIN32)
+    set(MUPDF_OUTPUT_DIR "${CMAKE_SOURCE_DIR}/libs/mupdf/platform/win32/x64/$<IF:$<CONFIG:Debug>,Debug,Release>")
+    set(MUPDF_OUTPUT "${MUPDF_OUTPUT_DIR}/mupdfcpp64.lib")
+    set(MUPDF_OUTPUT "${MUPDF_OUTPUT_DIR}/mupdfcpp64.lib" PARENT_SCOPE)
+endif()
+
+set(COMMON_PRV_LIBRARIES
+    presentation
+    adapters
+    application
+    infrastructure
+    domain
+    Qt6::Core
+    Qt6::Concurrent
+    Qt6::Quick
+    Qt6::Qml
+    Qt6::Widgets
+    Qt6::Test
+    Qt6::QuickControls2
+    ${MUPDF_OUTPUT}
+    suri
+    Catch2::Catch2
+)
+
+set(COMMON_PUBLIC_LIBRARIES
+    rapidfuzz::rapidfuzz
+)
+
+set(COMMON_INCLUDE_DIRS
+    ${ADAPTERS_INCLUDES}
+    ${APPLICATION_INCLUDES}
+    ${DOMAIN_INCLUDES}
+    ${INFRASTRUCTURE_INCLUDES}
+    ${CMAKE_CURRENT_SOURCE_DIR}/services
+    ${CMAKE_CURRENT_SOURCE_DIR}/utility
+)
+
+set(COMMON_EXE_SOURCES
+    ${CMAKE_SOURCE_DIR}/src/application_init.cpp
+    ${CMAKE_SOURCE_DIR}/src/global_controllers.cpp
+)
+
+add_executable(tests_example test_example.cpp test_main.cpp ${COMMON_EXE_SOURCES})
+target_include_directories(tests_example PRIVATE ${COMMON_INCLUDE_DIRS})
+target_link_libraries(tests_example PRIVATE ${COMMON_PRV_LIBRARIES})
+target_link_libraries(tests_example PUBLIC ${COMMON_PUBLIC_LIBRARIES})
+
 
