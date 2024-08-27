@@ -195,6 +195,7 @@ MFlickWrapper {
 
                     Label {
                         id: generalErrorText
+                        objectName: "generalErrorText"
                         Layout.topMargin: 8
                         visible: false
                         color: Style.colorErrorText
