@@ -4,6 +4,8 @@
 int main(int argc, char** argv)
 {
 
+    //HERE: my setup
+
 
     int result = Catch::Session().run(argc, argv);
 
