@@ -57,12 +57,16 @@ set(COMMON_EXE_SOURCES
     ${CMAKE_SOURCE_DIR}/src/global_controllers.cpp
 )
 
-add_executable(tests_example test_example.cpp TestFixture.cpp ${COMMON_EXE_SOURCES})
-target_include_directories(tests_example PRIVATE ${COMMON_INCLUDE_DIRS})
-target_link_libraries(tests_example PRIVATE ${COMMON_PRV_LIBRARIES})
-target_link_libraries(tests_example PUBLIC ${COMMON_PUBLIC_LIBRARIES})
+# Define the function to create a test executable
+function(create_test TARGET_NAME SOURCE_FILES)
+    add_executable(${TARGET_NAME} ${SOURCE_FILES} TestFixture.cpp ${COMMON_EXE_SOURCES})
+    target_include_directories(${TARGET_NAME} PRIVATE ${COMMON_INCLUDE_DIRS})
+    target_link_libraries(${TARGET_NAME} PRIVATE ${COMMON_PRV_LIBRARIES})
+    target_link_libraries(${TARGET_NAME} PUBLIC ${COMMON_PUBLIC_LIBRARIES})
+endfunction()
 
-add_executable(tests_invalid_credentials test_invalid_credentials.cpp TestFixture.cpp ${COMMON_EXE_SOURCES})
-target_include_directories(tests_invalid_credentials PRIVATE ${COMMON_INCLUDE_DIRS})
-target_link_libraries(tests_invalid_credentials PRIVATE ${COMMON_PRV_LIBRARIES})
-target_link_libraries(tests_invalid_credentials PUBLIC ${COMMON_PUBLIC_LIBRARIES})
+# Add tests
+create_test(test_example "test_example.cpp")
+create_test(tests_invalid_credentials "test_invalid_credentials.cpp")
+
+
