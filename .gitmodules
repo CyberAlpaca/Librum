@@ -11,8 +11,8 @@
 	path = libs/mupdf
 	url = https://github.com/ArtifexSoftware/mupdf.git
 [submodule "tests/gui_tests/suri"]
-	path = tests/gui_tests/suri
+	path = tests/gui_tests/libs/suri
 	url = https://github.com/CyberAlpaca/suri.git
 [submodule "tests/gui_tests/Catch2"]
-	path = tests/gui_tests/Catch2
+	path = tests/gui_tests/libs/Catch2
 	url = https://github.com/catchorg/Catch2
