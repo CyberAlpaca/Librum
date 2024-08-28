@@ -5,5 +5,5 @@ set(CMAKE_CXX_EXTENSIONS FALSE)
 
 add_subdirectory(libs/suri/)
 add_subdirectory(libs/Catch2/)
-add_subdirectory(interaction/)
-add_subdirectory(catch_login/)
+add_subdirectory(demo_qtest_tests/)
+add_subdirectory(demo_catch2_tests/)
