@@ -60,6 +60,7 @@ set(COMMON_EXE_SOURCES
 # Define the function to create a test executable
 function(create_test TARGET_NAME SOURCE_FILES)
     add_executable(${TARGET_NAME} ${SOURCE_FILES} TestFixture.cpp ${COMMON_EXE_SOURCES})
+    target_sources(${TARGET_NAME} PRIVATE macros.h)
     target_include_directories(${TARGET_NAME} PRIVATE ${COMMON_INCLUDE_DIRS})
     target_link_libraries(${TARGET_NAME} PRIVATE ${COMMON_PRV_LIBRARIES})
     target_link_libraries(${TARGET_NAME} PUBLIC ${COMMON_PUBLIC_LIBRARIES})

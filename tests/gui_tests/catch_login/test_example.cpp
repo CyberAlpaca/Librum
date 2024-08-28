@@ -3,18 +3,21 @@
 #include <suri/automator.h>
 #include <QQuickItem>
 #include "TestFixture.h"
+#include "macros.h"
 
 TEST_CASE_METHOD(TestFixture, "Basic UI Interaction") {
 
     QQuickItem *forgotPasswordLink = qobject_cast<QQuickItem*>(automator.findObject("forgotPasswordLabel"));
-    REQUIRE(forgotPasswordLink); // "forgotPasswordLink should be found"
+    REQUIRE_MSG(forgotPasswordLink,
+                    "forgotPasswordLink should be found");
 
     INFO("Click forgotPasswordLink");
     automator.click(forgotPasswordLink);
     automator.wait(1000);
 
     QQuickItem *backFromForgotPassword = qobject_cast<QQuickItem*>(automator.findObject("backFromForgotPassword"));
-    REQUIRE(backFromForgotPassword); //"backFromForgotPassword should be found"
+    REQUIRE_MSG(backFromForgotPassword,
+                    "backFromForgotPassword should be found");
 
     INFO("Click backFromForgotPassword");
     automator.click(backFromForgotPassword);
@@ -22,8 +25,8 @@ TEST_CASE_METHOD(TestFixture, "Basic UI Interaction") {
 
     QQuickItem *myInputField = qobject_cast<QQuickItem*>(automator.findObject("emailInput_textInput"));
 
-    REQUIRE(myInputField); //"myInputField should be found"
-    REQUIRE(myInputField->isVisible());// "myInputField should be visible"
+    REQUIRE_MSG(myInputField, "myInputField should be found");
+    REQUIRE_MSG(myInputField->isVisible(), "myInputField should be visible");
     automator.typeText(myInputField, "alpaca@cyberalpaca.com");
 
     automator.wait(1000);
