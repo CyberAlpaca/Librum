@@ -57,9 +57,12 @@ set(COMMON_EXE_SOURCES
     ${CMAKE_SOURCE_DIR}/src/global_controllers.cpp
 )
 
-add_executable(tests_example test_example.cpp test_main.cpp ${COMMON_EXE_SOURCES})
+add_executable(tests_example test_example.cpp test_main.cpp TestFixture.cpp ${COMMON_EXE_SOURCES})
 target_include_directories(tests_example PRIVATE ${COMMON_INCLUDE_DIRS})
 target_link_libraries(tests_example PRIVATE ${COMMON_PRV_LIBRARIES})
 target_link_libraries(tests_example PUBLIC ${COMMON_PUBLIC_LIBRARIES})
 
-
+add_executable(tests_invalid_credentials test_invalid_credentials.cpp test_main.cpp TestFixture.cpp ${COMMON_EXE_SOURCES})
+target_include_directories(tests_invalid_credentials PRIVATE ${COMMON_INCLUDE_DIRS})
+target_link_libraries(tests_invalid_credentials PRIVATE ${COMMON_PRV_LIBRARIES})
+target_link_libraries(tests_invalid_credentials PUBLIC ${COMMON_PUBLIC_LIBRARIES})
