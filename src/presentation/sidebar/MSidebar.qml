@@ -173,6 +173,7 @@ Item {
 
                 MSidebarItem {
                     id: settingsItem
+                    objectName: "settingsItem"
                     Layout.topMargin: 13
                     Layout.leftMargin: 10
                     imageWidth: 36
