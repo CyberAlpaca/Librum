@@ -69,5 +69,7 @@ endfunction()
 # Add tests
 create_test(test_example "test_example.cpp")
 create_test(tests_invalid_credentials "test_invalid_credentials.cpp")
+create_test(tests_settings "test_settings.cpp")
+
 
 

@@ -96,6 +96,7 @@ Item {
 
             MSettingsSidebarItem {
                 id: appearanceItem
+                objectName : "appearanceItem"
                 Layout.preferredHeight: 32
                 Layout.preferredWidth: internal.sidebarItemWidth
                 Layout.topMargin: 5

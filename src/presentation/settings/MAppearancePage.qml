@@ -149,6 +149,7 @@ Page {
 
                         MComboBox {
                             id: languageComboBox
+                            objectName: "languageComboBox"
                             Layout.topMargin: 4
                             Layout.preferredHeight: 36
                             Layout.fillWidth: true
